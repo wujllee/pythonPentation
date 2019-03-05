@@ -23,21 +23,38 @@ def usage():
     print("example:forzabruta.py -w http://targetsite.com/fuzz -t 5 -f con.file")
     
 class request_Performer(Thread):
+    '''
+    Thread: thread,handle one word in dictionary
+    '''
     def __init__(self,word,url):
         Thread.__init__(self)
         try:
             self.word=word.split("\n")[0]
             self.urly=url.replace("FUZZ",self.word)
             self.url=self.urly
-        except Exception, e :
+        except Exception as e:
             print(e)
     
     def run(self):
+        '''
+        be careful the usage of try-except in python 3.0 above:
+        for python 2.x:
+            try:
+                ....
+            :except Exception, e:
+                ...
+        for python 3.x:
+            try:
+                ....
+            :except Exception as e:
+                ...
+        otherwise, you will get a syntax error that causes a crash of your program
+        '''
         try:
             r=requests.get(self.url)
             print(self.url+' - '+str(r.status_code))
             i[0]=i[0]-1 #here we remove one thread from the counter
-        except Exception, e:
+        except Exception as e:
             print (e)
 def start(argv):
     banner()
@@ -55,7 +72,7 @@ def start(argv):
         if opt=='-w':
             url=arg
         elif opt=='-t':
-            threads=arg
+            threads=int(arg) #remember to do type conversion, or you'll get type error later
         elif opt=='-f':
             dic=arg
     try:
@@ -71,7 +88,7 @@ def launcher_thread(names,th,url):
     global i
     i=[]
     resultlist=[]
-    i.append[0]
+    i.append(0)
     while(len(names)):
         try:
             if i[0]<th:
